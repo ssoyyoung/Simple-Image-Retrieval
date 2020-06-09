@@ -29,14 +29,14 @@ def main():
     ds = list_ds.map(lambda x: preprocess(x, input_shape), num_parallel_calls=-1)
     dataset = ds.batch(batch_size).prefetch(-1)
 
-    with open('data/deepfashion/fvecs.bin', 'wb') as f:
+    with open('result/deepfashion/fvecs.bin', 'wb') as f:
         for batch in dataset:
             fvecs = model.predict(batch)
 
             fmt = f'{np.prod(fvecs.shape)}f'
             f.write(struct.pack(fmt, *(fvecs.flatten())))
 
-    with open('data/deepfashion/fnames.txt', 'w') as f:
+    with open('result/deepfashion/fnames.txt', 'w') as f:
         f.write('\n'.join(fnames))
 
 if __name__ == '__main__':
