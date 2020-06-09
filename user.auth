@@ -1,0 +1,8 @@
+{
+    "db": {
+        "host" : "piclick-ads.mysql.rds.aliyuncs.com",
+        "user" : "piclick",
+        "password" : "psr0035!",
+        "db" : "pirs_test"
+    }
+}
