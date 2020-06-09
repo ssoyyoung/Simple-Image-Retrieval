@@ -32,7 +32,7 @@ def populate(index, fvecs, batch_size=1000):
 
 def main():
     dim = 1280
-    base_dir = 'result/deepfashion/'
+    base_dir = 'result/pirs/'
     fvec_file = base_dir +'fvecs.bin'
     index_type = 'hnsw'
     index_file = f'{fvec_file}.{index_type}.index'
