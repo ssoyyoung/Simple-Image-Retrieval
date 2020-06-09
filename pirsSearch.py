@@ -6,6 +6,7 @@ import numpy as np
 import json
 from sklearn.preprocessing import normalize
 import faiss
+from config import Setting
 
 
 def get_index(index_type, dim):
@@ -32,7 +33,7 @@ def populate(index, fvecs, batch_size=1000):
 
 def main():
     dim = 1280
-    base_dir = 'result/pirs/'
+    base_dir = 'result/'+Setting.DATATYPE+'/'
     fvec_file = base_dir +'fvecs.bin'
     index_type = 'hnsw'
     index_file = f'{fvec_file}.{index_type}.index'
@@ -47,7 +48,6 @@ def main():
         index = get_index(index_type, dim)
         index = populate(index, fvecs)
         faiss.write_index(index, index_file)
-    print(index.ntotal)
 
     random.seed(2020)
     q_idx = [random.randint(0, fvecs.shape[0]) for _ in range(100)]
