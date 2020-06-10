@@ -17,4 +17,13 @@ class Setting():
     DATABASE_PWD: str = database['db']['password']
     DATABASE_DB: str = database['db']['db']
 
+
+class Config():
+
+    BATCH_SIZE: int = 100
+    INPUT_SHAPE: tuple = (224, 224, 3)
+    
+    
+
+
     

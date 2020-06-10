@@ -44,8 +44,6 @@ def main():
 
     dataset = ds.batch(batch_size).prefetch(-1)
 
-    """ 
-    
     with open('result/'+ Setting.DATATYPE +'/fvecs.bin', 'wb') as f:
         for batch in dataset:
             fvecs = model.predict(batch)
@@ -55,8 +53,6 @@ def main():
 
     with open('result/'+ Setting.DATATYPE +'/fnames.txt', 'w') as f:
         f.write('\n'.join(fnames)) 
-    
-    """
 
 
 
