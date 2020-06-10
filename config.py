@@ -9,7 +9,7 @@ with open("DBinfo.json") as f:
 class Setting():
 
     # DATA type
-    DATATYPE: str = "deepfashion" # deepfashion / pirs
+    DATATYPE: str = "pirs" # deepfashion / pirs
 
     # DB Auth info
     DATABASE_HOST: str = database['db']['host']

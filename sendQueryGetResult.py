@@ -79,17 +79,16 @@ def searchVec(vec):
 
     k = 10
 
-    dists, idxs = index.search(normalize(vec, k))
+    dists, idxs = index.search(normalize(vec),k)
 
-    imgName = img_path.split("/")[-1]+"_"
+    imgName = "test4_"
 
-    np.save(base_dir+imgName+"queryIdx.npy", q_idx)
     np.save(base_dir+imgName+"distance.npy", dists)
     np.save(base_dir+imgName+"resultIdx.npy", idxs)
     
 
 if __name__ == '__main__':
-    vec = getVec('/data/github/Simple-Image-Retrieval/test.jpg')
+    vec = getVec('test4.jpg')
     searchVec(vec)
 
 
