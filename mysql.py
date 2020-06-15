@@ -32,15 +32,16 @@ def connectDB(data_count):
                         db=Setting.DATABASE_DB
                         )
  
-    sql_query = "SELECT save_path, save_name FROM `crawling_list` WHERE STATUS=1 AND cat_key='WC13' LIMIT "+str(data_count)
+    sql_query = "SELECT id, save_path, save_name FROM `crawling_list` WHERE STATUS=1 AND cat_key='WC13' LIMIT "+str(data_count)
 
     curs = conn.cursor()
     curs.execute(sql_query)
     data = curs.fetchall()
     
     # change img_path
-    imgList = [base_img_path+path+"/"+name for path, name in data]
+    imgList = [base_img_path+path+"/"+name for _, path, name in data]
     imgList = checkImg(imgList)
+
     print("total file count is...", len(imgList))
 
     curs.close()
