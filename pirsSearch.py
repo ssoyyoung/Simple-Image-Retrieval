@@ -31,9 +31,9 @@ def populate(index, fvecs, batch_size=1000):
     return index
 
 
-def main():
+def createQueryDB(datatype):
     dim = 1280
-    base_dir = 'result/'+Setting.DATATYPE+'/'
+    base_dir = 'result/'+datatype+'/'
     fvec_file = base_dir +'fvecs.bin'
     index_type = 'hnsw'
     index_file = f'{fvec_file}.{index_type}.index'
@@ -66,6 +66,8 @@ def main():
     for i in q_idx:
         dists, idxs = index.search(normalize(fvecs[i:i+1]), k)
     print((time.time() - s) / len(q_idx))
+
+    return "create"
     
 
 if __name__ == '__main__':

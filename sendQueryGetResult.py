@@ -59,7 +59,9 @@ def populate(index, fvecs, batch_size=1000):
 
     return index
 
-def searchVec(vec):
+def searchVec(imgPath):
+    vec = getVec(imgPath)
+
     dim = 1280
     base_dir = 'result/'+Setting.DATATYPE+'/'
     fvec_file = base_dir +'fvecs.bin'
@@ -85,10 +87,12 @@ def searchVec(vec):
 
     np.save(base_dir+imgName+"distance.npy", dists)
     np.save(base_dir+imgName+"resultIdx.npy", idxs)
+
+    return "done"
     
 
-if __name__ == '__main__':
-    vec = getVec('test4.jpg')
-    searchVec(vec)
+""" if __name__ == '__main__':
+    # send query image for search
+    searchVec('test4.jpg') """
 
 

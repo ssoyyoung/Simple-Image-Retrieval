@@ -17,7 +17,7 @@ def preprocess(img_path, input_shape):
     return img
 
 
-def main():
+def vector(datatype):
     batch_size = 100
     input_shape = (224, 224, 3)
     base = tf.keras.applications.MobileNetV2(input_shape=input_shape,
@@ -28,10 +28,10 @@ def main():
     model = Model(inputs=base.input, outputs=layers.GlobalAveragePooling2D()(base.output))
 
     # check data type
-    if Setting.DATATYPE == "deepfashion":
+    if datatype == "deepfashion":
         fnames = glob.glob('/data/deepfashion*/**/*.jpg', recursive=True)
 
-    elif Setting.DATATYPE == "pirs":
+    elif datatype == "pirs":
         fnames = connectDB(65000)
 
     # make a dataset from a numpy array
@@ -54,7 +54,9 @@ def main():
     with open('result/'+ Setting.DATATYPE +'/fnames.txt', 'w') as f:
         f.write('\n'.join(fnames)) 
 
+    return "okay"
 
 
-if __name__ == '__main__':
-    main()
+
+""" if __name__ == '__main__':
+    vector() """
