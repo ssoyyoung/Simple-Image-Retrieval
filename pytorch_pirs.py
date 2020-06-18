@@ -53,7 +53,7 @@ class Pirs(Dataset):
         return len(self.img_list)
 
     def __getitem__(self, idx):
-        image = Image.open(self.img_list[0])
+        image = Image.open(self.img_list[idx])
         tran_img = self.transform(image)
 
         return tran_img
