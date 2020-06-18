@@ -4,5 +4,10 @@
         "user" : "piclick",
         "password" : "psr0035!",
         "db" : "pirs_test"
-    }
+    },
+
+    "ela": {
+        "host": "172.16.0.240",
+        "port": "9200"
+    } 
 }

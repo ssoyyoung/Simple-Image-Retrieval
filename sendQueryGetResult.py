@@ -11,6 +11,7 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 import tensorflow.keras.layers as layers
 from tensorflow.keras.models import Model
 from config import Setting
+from elastic import getRawbox
 
 
 # base model loading
@@ -23,10 +24,24 @@ base.trainable = False
 model = Model(inputs=base.input, outputs=layers.GlobalAveragePooling2D()(base.output))
 
 def preprocess(img_path, input_shape):
-    img = tf.io.read_file(img_path)
-    img = tf.image.decode_jpeg(img, channels=input_shape[2])
-    img = tf.image.resize(img, input_shape[:2])
+    ori_img = tf.io.read_file(img_path)
+    ori_img = tf.image.decode_jpeg(ori_img, channels=input_shape[2]) # img.shape = (h,w,c)
+    print(ori_img.shape)
 
+    # Adding Bounding box crop : get bounding box from Elasticsearch
+    h, w = ori_img.shape[0], ori_img.shape[1]
+    rawBox = getRawbox(366929)
+    rawBox[0],rawBox[1],rawBox[2],rawBox[3] = rawBox[0]*w,rawBox[1]*h,rawBox[2]*w,rawBox[3]*h
+    rawBox = [int(i) for i in rawBox]
+    img = tf.image.crop_to_bounding_box(
+                                    ori_img,
+                                    rawBox[1],
+                                    rawBox[0],
+                                    abs(rawBox[3]-rawBox[1]),
+                                    abs(rawBox[2]-rawBox[0]))
+    print("ori_img.shape :",ori_img.shape, "img.shape :",img.shape)
+    
+    img = tf.image.resize(img, input_shape[:2])
     img = preprocess_input(img)
     return img
 
@@ -91,8 +106,8 @@ def searchVec(imgPath):
     return "done"
     
 
-""" if __name__ == '__main__':
+if __name__ == '__main__':
     # send query image for search
-    searchVec('test4.jpg') """
+    searchVec('test4.jpg')
 
 

@@ -1,7 +1,26 @@
-from elasticsearch import elasticsearch
+from elasticsearch import Elasticsearch
+from config import Setting
 
+es = Elasticsearch(Setting.ELA_ADDR, timeout=30, max_retries=10, retry_on_timeout=True)
 
-es = Elasticsearch("http://47.56.200.94:9200")
+# INPUT : id // OUTPUT : raw_box
+def getRawbox(id):
+    
+    index = "pirs*"
+    body = {
+        "_source": "raw_box",
+        "query": {
+            "match": {
+                "id" : str(id)
+            }
+        }
+    }
 
-def getRawbox(idList):
-    # TODO : create function for get rawbox in elasticsearch database
+    res = es.search(index=index, body=body)
+    rawBox = res['hits']['hits'][0]['_source']['raw_box']
+
+    return rawBox
+
+if __name__ == "__main__":
+    getRawbox(366929)
+

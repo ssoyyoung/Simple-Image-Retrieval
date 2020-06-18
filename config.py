@@ -17,6 +17,10 @@ class Setting():
     DATABASE_PWD: str = database['db']['password']
     DATABASE_DB: str = database['db']['db']
 
+    # Elastic info
+    ELA_HOST: str = database['ela']['host']
+    ELA_PORT: str = database['ela']['port']
+    ELA_ADDR: str = ELA_HOST+":"+ELA_PORT
 
 class Config():
 

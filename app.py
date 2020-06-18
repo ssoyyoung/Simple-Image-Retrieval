@@ -11,8 +11,8 @@ datatype = "deepfashion"
 def checkFlask():
     return "Hello Flask"
 
-@app.route('/getVector')
-def getVector():
+@app.route('/getVector/<datatype>')
+def getVector(datatype):
     return pirs.vector(datatype)
 
 @app.route("/queryResult")
