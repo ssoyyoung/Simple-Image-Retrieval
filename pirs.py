@@ -14,6 +14,7 @@ def preprocess(img_path, input_shape):
     img = tf.io.read_file(img_path)
     img = tf.image.decode_jpeg(img, channels=input_shape[2])
     img = tf.image.resize(img, input_shape[:2])
+    print(img.shape)
     img = preprocess_input(img)
     return img
 
@@ -28,6 +29,7 @@ def vector(datatype):
 
     model = Model(inputs=base.input, outputs=layers.GlobalAveragePooling2D()(base.output))
 
+    '''
     # check data type
     if datatype == "deepfashion":
         fnames = glob.glob('/data/deepfashion*/**/*.jpg', recursive=True)
@@ -36,6 +38,9 @@ def vector(datatype):
     elif datatype == "pirs":
         fnames = connectDB(10)
         print("total"+datatype+"img count :", len(fnames))
+    '''
+
+    fnames = glob.glob('testImg/*.jpg', recursive=True)
 
     # make a dataset from a numpy array
     list_ds = tf.data.Dataset.from_tensor_slices(fnames)
@@ -48,6 +53,7 @@ def vector(datatype):
 
     dataset = ds.batch(batch_size).prefetch(-1)
 
+    '''
     with open('result/'+ datatype +'/fvecs.bin', 'wb') as f:
         for batch in dataset:
             fvecs = model.predict(batch)
@@ -57,7 +63,7 @@ def vector(datatype):
 
     with open('result/'+ datatype +'/fnames.txt', 'w') as f:
         f.write('\n'.join(fnames)) 
-
+    '''
     return "okay"
 
 

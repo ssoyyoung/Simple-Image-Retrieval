@@ -23,10 +23,9 @@ base.trainable = False
 
 model = Model(inputs=base.input, outputs=layers.GlobalAveragePooling2D()(base.output))
 
-def preprocess(img_path, input_shape):
-    ori_img = tf.io.read_file(img_path)
-    ori_img = tf.image.decode_jpeg(ori_img, channels=input_shape[2]) # img.shape = (h,w,c)
-    print(ori_img.shape)
+def preprocess_box(img_path, input_shape):
+    img = tf.io.read_file(img_path)
+    img = tf.image.decode_jpeg(img, channels=input_shape[2]) # img.shape = (h,w,c)
 
     # Adding Bounding box crop : get bounding box from Elasticsearch
     h, w = ori_img.shape[0], ori_img.shape[1]
@@ -41,6 +40,13 @@ def preprocess(img_path, input_shape):
                                     abs(rawBox[2]-rawBox[0]))
     print("ori_img.shape :",ori_img.shape, "img.shape :",img.shape)
     
+    img = tf.image.resize(img, input_shape[:2])
+    img = preprocess_input(img)
+    return img
+
+def preprocess(img_path, input_shape):
+    img = tf.io.read_file(img_path)
+    img = tf.image.decode_jpeg(img, channels=input_shape[2])
     img = tf.image.resize(img, input_shape[:2])
     img = preprocess_input(img)
     return img
@@ -77,15 +83,15 @@ def populate(index, fvecs, batch_size=1000):
 def searchVec(imgPath):
     vec = getVec(imgPath)
 
-    dim = 1280
-    base_dir = 'result/'+Setting.DATATYPE+'/'
+    dim = 512
+    base_dir = 'result/torch/'
     fvec_file = base_dir +'fvecs.bin'
     index_type = 'hnsw'
     index_file = f'{fvec_file}.{index_type}.index'
 
     fvecs = np.memmap(fvec_file, dtype='float32', mode='r').view('float32').reshape(-1, dim)
 
-    if os.path.exists(index_file):
+    if os.path.exists(index_file):  
         index = faiss.read_index(index_file)
         if index_type == 'hnsw':
             index.hnsw.efSearch = 256
@@ -108,6 +114,6 @@ def searchVec(imgPath):
 
 if __name__ == '__main__':
     # send query image for search
-    searchVec('test4.jpg')
+    searchVec('testImg/test4.jpg')
 
 
