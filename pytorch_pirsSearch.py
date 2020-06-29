@@ -33,7 +33,7 @@ def populate(index, fvecs, batch_size=1000):
 
 def createQueryDB():
     dim = 512
-    base_dir = 'result/torch/c13_'
+    base_dir = 'result/yolo/'
     fvec_file = base_dir +'fvecs.bin'
     index_type = 'hnsw'
     index_file = f'{fvec_file}.{index_type}.index'

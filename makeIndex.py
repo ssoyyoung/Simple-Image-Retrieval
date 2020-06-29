@@ -39,7 +39,7 @@ class YoloData(Dataset):
         img = letterbox(img0, 416)
         
         tran_img = self.transform(img)
-        return tran_img, img, imgPath, self.label, (h0, w0)
+        return tran_img, img0, imgPath, self.label, (h0, w0)
     
     @staticmethod
     def collate_fn(batch):
@@ -97,8 +97,7 @@ for batch, (imgs, img0s, paths, labels, shapes) in enumerate(dataloader):
         pred = model(imgs)[0]
         pred = non_max_suppression(pred, conf_thres=0.2, nms_thres=0.6)
 
-        del imgs
-
+        
     # Process detections
     res = []
     info = []
@@ -107,7 +106,7 @@ for batch, (imgs, img0s, paths, labels, shapes) in enumerate(dataloader):
         if det is not None and len(det):
             #print(det[:, :4])
             #make origin size
-            #det[:, :4] = scale_coords(imgs.size()[2:], det[:, :4], im0shape).round()  # originial
+            det[:, :4] = scale_coords(imgs.size()[2:], det[:, :4], im0shape).round()  # originial
             
             xyxyList = []
             for *xyxy, conf, cls in det:
@@ -127,13 +126,13 @@ for batch, (imgs, img0s, paths, labels, shapes) in enumerate(dataloader):
     #fvecs = feature_extractor(result)
     #print(fvecs.shape)
 
-    with open('result/torch/yolo.bin', 'ab') as f:
+    with open('result/yolo/fvecs.bin', 'ab') as f:
         fvecs = feature_extractor(result)
 
         fmt = f'{np.prod(fvecs.shape)}f'
         f.write(struct.pack(fmt, *(fvecs.flatten())))
 
-    with open('result/torch/yolo.txt', 'a') as f:
+    with open('result/yolo/fnames.txt', 'a') as f:
         for line in info:
             #f.write(str(line)+'\n') 
             f.write(json.dumps(line)+'\n')
