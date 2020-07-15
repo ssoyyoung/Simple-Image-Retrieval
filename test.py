@@ -1,42 +1,62 @@
-from yolov3.pirs_utils_v2 import *
-from PIL import Image
 
-path = "testImg/test.jpg"
-
-#img0 = cv2.imread(path)
-#image = Image.open("testImg/test.jpg").convert('RGB')
-#img, img0 = transfer_b64(image, mode="square")
-
-img, img0 = transfer(path, mode="square")
-cv2.imwrite('check.jpg', img)
+import os
+import time
+import math
+import random
+import numpy as np
+import json
+from sklearn.preprocessing import normalize
+import faiss
 
 
-print(img.shape)
-print(img0.shape)
+def get_index(index_type, dim):
+    if index_type == 'hnsw':
+        m = 48
+        index = faiss.IndexHNSWFlat(dim, m)
+        index.hnsw.efConstruction = 128
+        return index
+    elif index_type == 'l2':
+        return faiss.IndexFlatL2(dim)
+        
+    raise
 
 
-def letterbox(img, new_shape=416, color=(128,128,128), mode='square'):
-    # Resize a rectangular image to a 32 pixel multiple rectangle
-    shape = img.size  # current shape [height, width]
+def populate(index, fvecs, batch_size=1000):
+    nloop = math.ceil(fvecs.shape[0] / batch_size)
+    for n in range(nloop):
+        s = time.time()
+        index.add(normalize(fvecs[n * batch_size : min((n + 1) * batch_size, fvecs.shape[0])]))
+        print(n * batch_size, time.time() - s)
 
-    if isinstance(new_shape, int):
-        ratio = float(new_shape) / max(shape)
-    else:
-        ratio = max(new_shape) / max(shape)  # ratio  = new / old
+    return index
 
-    ratiow, ratioh = ratio, ratio
-    new_unpad = (int(round(shape[0] * ratio)), int(round(shape[1] * ratio)))
 
-    # Compute padding https://github.com/ultralytics/yolov3/issues/232
-    dw = (new_shape - new_unpad[0]) / 2  # width padding
-    dh = (new_shape - new_unpad[1]) / 2  # height padding
+dim = 512
+base_dir = 'resultFile/v1/Dress/'
+fvec_file = base_dir +'fvecs.bin'
+index_type = 'hnsw'
+index_file = f'{fvec_file}.{index_type}.index'
 
-    if shape[::-1] != new_unpad:  # resize
-        if ratio < 1:
-            img = cv2.resize(img, new_unpad, interpolation=cv2.INTER_AREA)  # INTER_AREA is better, INTER_LINEAR is faster
-        else:
-            img = cv2.resize(img, new_unpad, interpolation=cv2.INTER_LANCZOS4)
-    top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
-    left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
-    img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
-    return img, ratiow, ratioh, dw, dh
+fvecs = np.memmap(fvec_file, dtype='float32', mode='r').view('float32').reshape(-1, dim)
+
+if os.path.exists(index_file):
+    index = faiss.read_index(index_file)
+    if index_type == 'hnsw':
+        index.hnsw.efSearch = 256
+else:
+    index = get_index(index_type, dim)
+    index = populate(index, fvecs)
+    faiss.write_index(index, index_file)
+
+random.seed(2000)
+q_idx = [random.randint(0, fvecs.shape[0]) for _ in range(100)]
+
+k = 10
+s = time.time()
+print(type(fvecs[q_idx]))
+dists, idxs = index.search(normalize(fvecs[q_idx]), k)
+print(q_idx)
+
+np.save("queryIdx.npy", q_idx)
+np.save("distance.npy", dists)
+np.save("resultIdx.npy", idxs)

@@ -1,7 +1,13 @@
-result/*/*
-auth.json
+resultFile/*
 *.jpg
 __pycache__/*
 *.ipynb
 */__pycache__/*
 *.pyc
+makeURL.py
+config/*
+*.npy
+urls.txt
+.vscode
+mapping/*
+.ipynb_checkpoints/*
