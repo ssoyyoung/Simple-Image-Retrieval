@@ -5,7 +5,7 @@ __pycache__/*
 */__pycache__/*
 *.pyc
 makeURL.py
-config/*
+config/DBinfo.json
 *.npy
 urls.txt
 .vscode
