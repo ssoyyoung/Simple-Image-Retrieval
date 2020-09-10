@@ -6,9 +6,9 @@ from PIL import Image
 
 from config.config import Setting
 
-def connect(nation):
+def connect():
     '''
-    Commnet : Connect MySQL DataBase
+    Comment : Connect MySQL DataBase
     `
     @parameter : None
     `
@@ -39,7 +39,7 @@ def cursorDB(cate, num, baseQuery):
 
 def getImgList(cate, num=0):
     '''
-    Commnet : Connect MySQL DB and get IMG list
+    Comment : Connect MySQL DB and get IMG list
     `
     @parameter : category(select db category), num(select data count(=limit))
     `
@@ -60,7 +60,7 @@ def getImgList(cate, num=0):
 
 def getAllData(cate, num=None):
     '''
-    Commnet : Connect MySQL DB and get All DB data
+    Comment : Connect MySQL DB and get All DB data
     `
     @parameter : category(select db category), num(select data count(=limit))
     `
@@ -87,7 +87,7 @@ def getAllData(cate, num=None):
 
 def checkImgStatus(imgList):
     '''
-    Comnet : Image file Validation check
+    Comment : Image file Validation check
     `
     @parameter : Image Path [Type : List]
     `

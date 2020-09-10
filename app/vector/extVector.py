@@ -109,11 +109,6 @@ class Vector():
                         cropBox = letterbox(img0s[i].crop(xyxy), desired_size=224)
                         res['vecs'][saveLabel].append(cropBox)
 
-
-            with open("yoloResult.json", "a") as f:
-                json.dumps(res, indent='\t')
-
-
         return res
 
     
